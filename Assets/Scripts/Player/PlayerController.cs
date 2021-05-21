@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
             velocity.y += gravity * Time.deltaTime;
         }
 
-        characterController.SimpleMove(new Vector3(runSpeed, 0, 0) * Time.deltaTime);
+        characterController.Move(new Vector3(runSpeed, 0, 0) * Time.deltaTime);
 
         if (isGrounded && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
         {
