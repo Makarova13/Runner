@@ -7,13 +7,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     LayerMask groundLayer;
     [SerializeField]
-    LayerMask fenceLayer;
-    [SerializeField]
     float runSpeed = 1;
     [SerializeField]
     private float jumpHeight = 1;
-    [SerializeField]
-    private float turnSpeed = 3;
 
     #endregion
 
@@ -23,7 +19,6 @@ public class PlayerController : MonoBehaviour
     private CharacterController characterController;
     private Vector3 velocity;
     private bool isGrounded;
-    private bool canTurn;
 
     #endregion
 
@@ -35,7 +30,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         isGrounded = Physics.CheckSphere(transform.position, 0.1f, groundLayer, QueryTriggerInteraction.Ignore);
-        canTurn = !Physics.CheckSphere(transform.position, 0.5f, fenceLayer, QueryTriggerInteraction.Ignore);
 
         if (isGrounded && velocity.y <= 0)
         {
@@ -47,26 +41,28 @@ public class PlayerController : MonoBehaviour
             velocity.y += gravity * Time.deltaTime;
         }
 
-        characterController.Move(new Vector3(runSpeed, 0, 0) * Time.deltaTime);
+        characterController.SimpleMove(new Vector3(runSpeed, 0, 0) * Time.deltaTime);
 
         if (isGrounded && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
         {
             velocity.y += Mathf.Sqrt(-1 * jumpHeight * gravity);
         }
 
-        if (canTurn && Input.GetButton("Horizontal"))
+        if (Input.GetButton("Horizontal"))
         {
-            if (Input.GetAxis("Horizontal") > 0)
+            if (Input.GetAxis("Horizontal") > 0 && characterController.transform.position.z >= 0)
             {
-                characterController.Move(new Vector3(0, 0, -turnSpeed) * Time.deltaTime);
+                if (characterController.transform.position.z >= 0)
+                {
+                    characterController.Move(new Vector3(0, 0, -0.6f));
+                }
             }
-            else
+            else if (characterController.transform.position.z <= 0)
             {
-                characterController.Move(new Vector3(0, 0, turnSpeed) * Time.deltaTime);
+                characterController.Move(new Vector3(0, 0, 0.6f));
             }
         }
-
-        // vertical velocity
-        characterController.Move(velocity * Time.deltaTime);
+        
+        characterController.Move(velocity * Time.deltaTime); // vertical velocity
     }
 }

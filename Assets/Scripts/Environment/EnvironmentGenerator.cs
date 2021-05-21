@@ -1,22 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnvironmentGenerator : MonoBehaviour
 {
     [SerializeField]
-    private Transform tile;
+    private List<Transform> groundTiles;
+    [SerializeField]
+    private GameObject barrier;
 
-    private Vector3 nextSpawnPosition;
+    private Vector3 nextGroundSpawnPosition;
+    private Vector3 nextBarrierSpawnPosition;
 
     void Start()
     {
-        nextSpawnPosition.x = 1; // start position is 10 because previous tiles were generated manualy
-
-        for (int i = 0; i < 10; i++)
-        {
-            PlaceNewTiles();
-         }
+        nextGroundSpawnPosition.x = 13; // start position is 10 because previous tiles were generated manualy
 
         StartCoroutine(SpawnTiles());
     }
@@ -28,14 +27,38 @@ public class EnvironmentGenerator : MonoBehaviour
 
     private IEnumerator SpawnTiles()
     {
-        yield return new WaitForSeconds(2f * Time.deltaTime); //wait a second before spawning tiles
-        PlaceNewTiles();
+        yield return new WaitForSeconds(1f * Time.deltaTime); //wait a second before spawning tiles
+        PlaceNewGroundTiles();
+
+        if(Random.Range(0, 5) == 0)
+        {
+            PlaceNewBarrierTiles();
+        }
+
         StartCoroutine(SpawnTiles());
     }
 
-    private void PlaceNewTiles()
+    private void PlaceNewGroundTiles()
     {
-        Instantiate(tile, nextSpawnPosition, tile.rotation); // spawn tiles
-        nextSpawnPosition.x += 1; // calculate new position
+        foreach (var tile in groundTiles)
+        {
+            Instantiate(tile, nextGroundSpawnPosition, tile.rotation); // spawn tiles
+            nextGroundSpawnPosition.x += 0.5f; // calculate new position
+        }
+    }
+
+    private void PlaceNewBarrierTiles()
+    {
+        var barrierTiles = barrier.GetComponentsInChildren<Transform>();
+        
+        int index = Random.Range(0, barrierTiles.Length - 1);
+        var barrierTile = barrierTiles[index]; // take a random item from barriers list
+
+        nextBarrierSpawnPosition = nextGroundSpawnPosition;
+
+        float randomZ = Random.Range(-1, 1);
+        nextBarrierSpawnPosition.z = randomZ; // set a z position of the barrier
+
+        Instantiate(barrierTile, nextBarrierSpawnPosition, barrierTile.rotation); // spawn tiles
     }
 }
