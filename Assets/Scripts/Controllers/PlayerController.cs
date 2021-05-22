@@ -60,12 +60,12 @@ public class PlayerController : MonoBehaviour
             {
                 if (characterController.transform.position.z >= 0)
                 {
-                    characterController.Move(new Vector3(0, 0, -1));
+                    characterController.Move(new Vector3(0, 0, -1 - transform.position.z));
                 }
             }
             else if (characterController.transform.position.z <= 0)
             {
-                characterController.Move(new Vector3(0, 0, 1));
+                characterController.Move(new Vector3(0, 0, 1 + transform.position.z));
             }
         }
         
