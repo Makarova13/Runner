@@ -1,20 +1,23 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Assets.Scripts.Common;
 
 public class EnvironmentGenerator : MonoBehaviour
 {
     [SerializeField]
-    private List<Transform> groundTiles;
+    private Transform ground;
     [SerializeField]
     private GameObject barrier;
 
     private Vector3 nextGroundSpawnPosition;
     private Vector3 nextBarrierSpawnPosition;
+    private Transform[] barrierTiles;
+    private float waitTime = 1f;
 
     void Start()
     {
         nextGroundSpawnPosition.x = 13; // start position is 10 because previous tiles were generated manualy
+        barrierTiles = barrier.GetComponentsInChildren<Transform>();
 
         StartCoroutine(SpawnTiles());
     }
@@ -26,30 +29,26 @@ public class EnvironmentGenerator : MonoBehaviour
 
     private IEnumerator SpawnTiles()
     {
-        yield return new WaitForSeconds(1f * Time.deltaTime); //wait a second before spawning tiles
+        yield return new WaitForSeconds(waitTime * Time.deltaTime); //wait a second before spawning tiles
         PlaceNewGroundTiles();
 
-        if(Random.Range(0, 5) == 0)
+        if(Random.Range(0, 10) == 0)
         {
             PlaceNewBarrierTiles();
         }
 
+        waitTime = waitTime > Constants.MinWaitTime ? waitTime - GameManager.Instance.Player.RunSpeed * Constants.RunningAccelaration * Time.deltaTime : waitTime;
         StartCoroutine(SpawnTiles());
     }
 
     private void PlaceNewGroundTiles()
     {
-        foreach (var tile in groundTiles)
-        {
-            Instantiate(tile, nextGroundSpawnPosition, tile.rotation); // spawn tiles
-            nextGroundSpawnPosition.x += 0.5f; // calculate new position
-        }
+        Instantiate(ground, nextGroundSpawnPosition, ground.rotation); // spawn tiles
+        nextGroundSpawnPosition.x += 0.5f; // calculate new position
     }
 
     private void PlaceNewBarrierTiles()
     {
-        var barrierTiles = barrier.GetComponentsInChildren<Transform>();
-        
         int index = Random.Range(0, barrierTiles.Length - 1);
         var barrierTile = barrierTiles[index]; // take a random item from barriers list
 
