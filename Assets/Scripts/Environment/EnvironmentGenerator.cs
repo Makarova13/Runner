@@ -51,20 +51,19 @@ public class EnvironmentGenerator : MonoBehaviour
 
     private void PlaceNewBarrierTiles()
     {
-        bool shouldSpawn = !Physics.CheckSphere(transform.position, 1f, barrierLayer, QueryTriggerInteraction.Ignore);
+        int index = Random.Range(0, barrierTiles.Length - 1);
+        var barrierTile = barrierTiles[index]; // take a random item from barriers list
+
+        nextBarrierSpawnPosition = nextGroundSpawnPosition;
+
+        float randomZ = Random.Range(-1, 1);
+        nextBarrierSpawnPosition.z = randomZ; // set a z position of the barrier
+
+        bool shouldSpawn = !Physics.CheckSphere(nextBarrierSpawnPosition, 2f, barrierLayer, QueryTriggerInteraction.UseGlobal);
 
         if (shouldSpawn)
         {
-            int index = Random.Range(0, barrierTiles.Length - 1);
-            var barrierTile = barrierTiles[index]; // take a random item from barriers list
-
-            nextBarrierSpawnPosition = nextGroundSpawnPosition;
-
-            float randomZ = Random.Range(-1, 1);
-            nextBarrierSpawnPosition.z = randomZ; // set a z position of the barrier
-
-            Instantiate(barrierTile, nextBarrierSpawnPosition, barrierTile.rotation); // spawn tiles}
-
+            Instantiate(barrierTile, nextBarrierSpawnPosition, barrierTile.rotation); // spawn tiles
         }
     }
 }

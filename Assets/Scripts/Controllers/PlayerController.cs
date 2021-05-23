@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Threading;
 using Assets.Scripts.Common;
 
 public class PlayerController : MonoBehaviour
@@ -47,14 +48,15 @@ public class PlayerController : MonoBehaviour
             velocity.y += gravity * Time.deltaTime; // add gravity
         }
 
-        characterController.Move(new Vector3(GameManager.Instance.Player.RunSpeed, 0, 0) * Time.deltaTime); // make character run
 
         if (isGrounded && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
         {
             velocity.y += JumpForce; // increase y to jump
         }
-    
-        characterController.Move(velocity * Time.deltaTime); // move character (only vertical movment)
+
+        characterController.Move(velocity * Time.deltaTime); // move character (only vertical movement)
+
+        characterController.Move(new Vector3(GameManager.Instance.Player.RunSpeed, 0, 0) * Time.deltaTime); // make character run
 
         if (Input.GetButton("Horizontal"))
         {
@@ -72,5 +74,17 @@ public class PlayerController : MonoBehaviour
         }
 
         GameManager.Instance.Player.RunSpeed += GameManager.Instance.Player.RunSpeed * Constants.RunningAccelaration;
+    }
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (GameManager.Instance.Player.Health > 0)
+        {
+            GameManager.Instance.Player.Health--;
+            transform.position = new Vector3(transform.position.x + 2, 0, 0);
+            Time.timeScale = 0;
+            Thread.Sleep(1000);
+            Time.timeScale = 1;
+        }
     }
 }
