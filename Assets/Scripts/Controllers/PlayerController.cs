@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Threading;
 using Assets.Scripts.Common;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -32,6 +33,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1;
+        GameManager.Instance.Player.Reset();
         characterController = GetComponent<CharacterController>();
     }
 
@@ -47,7 +50,6 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y += gravity * Time.deltaTime; // add gravity
         }
-
 
         if (isGrounded && (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
         {
@@ -78,13 +80,23 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        if (GameManager.Instance.Player.Health > 0)
-        {
+        GameManager.Instance.Player.Score++;
+        Destroy(collider.gameObject);
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.layer == LayerMask.NameToLayer(Constants.BarriersLayerName) && GameManager.Instance.Player.Health > 0)
+        { 
             GameManager.Instance.Player.Health--;
-            transform.position = new Vector3(transform.position.x + 2, 0, 0);
-            Time.timeScale = 0;
-            Thread.Sleep(1000);
-            Time.timeScale = 1;
+
+            if (GameManager.Instance.Player.Health == 0)
+            {
+                SceneManager.LoadScene(Constants.MenuSceneName, LoadSceneMode.Additive);
+                Time.timeScale = 0;
+            }
+
+            transform.position = new Vector3(transform.position.x + 2, 1, 0);
         }
     }
 }
