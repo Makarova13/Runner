@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Player = new Player();
+        Player = new Player(3);
         DontDestroyOnLoad(gameObject);
     }
 }

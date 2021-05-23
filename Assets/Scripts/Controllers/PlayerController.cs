@@ -53,6 +53,8 @@ public class PlayerController : MonoBehaviour
         {
             velocity.y += JumpForce; // increase y to jump
         }
+    
+        characterController.Move(velocity * Time.deltaTime); // move character (only vertical movment)
 
         if (Input.GetButton("Horizontal"))
         {
@@ -60,16 +62,15 @@ public class PlayerController : MonoBehaviour
             {
                 if (characterController.transform.position.z >= 0)
                 {
-                    characterController.Move(new Vector3(0, 0, -1 - transform.position.z));
+                    characterController.Move(new Vector3(0, 0, -1));
                 }
             }
             else if (characterController.transform.position.z <= 0)
             {
-                characterController.Move(new Vector3(0, 0, 1 + transform.position.z));
+                characterController.Move(new Vector3(0, 0, 1));
             }
         }
-        
-        characterController.Move(velocity * Time.deltaTime); // move character (only vertical movment)
+
         GameManager.Instance.Player.RunSpeed += GameManager.Instance.Player.RunSpeed * Constants.RunningAccelaration;
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameUIController : MonoBehaviour
 {
@@ -17,5 +15,17 @@ public class GameUIController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void PauseBottonClick()
+    {
+        Time.timeScale = 0;
+        pausePanel.SetActive(true);
+    }
+
+    public void StartButtonClick()
+    {
+        Time.timeScale = 1;
+        pausePanel.SetActive(false);
     }
 }

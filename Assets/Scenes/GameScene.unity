@@ -6554,8 +6554,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 440f17a0aff640745bc5707bf8cd3718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barrierLayer:
+    serializedVersion: 2
+    m_Bits: 512
   ground: {fileID: 1184119757}
-  barrier: {fileID: 0}
+  barrier: {fileID: 9165797916458643015, guid: 3598b1cbcda551346876c80ceae741dd, type: 3}
 --- !u!1001 &952841621
 PrefabInstance:
   m_ObjectHideFlags: 0

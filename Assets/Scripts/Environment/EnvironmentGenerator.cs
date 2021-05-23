@@ -5,6 +5,8 @@ using Assets.Scripts.Common;
 public class EnvironmentGenerator : MonoBehaviour
 {
     [SerializeField]
+    LayerMask barrierLayer;
+    [SerializeField]
     private Transform ground;
     [SerializeField]
     private GameObject barrier;
@@ -49,14 +51,20 @@ public class EnvironmentGenerator : MonoBehaviour
 
     private void PlaceNewBarrierTiles()
     {
-        int index = Random.Range(0, barrierTiles.Length - 1);
-        var barrierTile = barrierTiles[index]; // take a random item from barriers list
+        bool shouldSpawn = !Physics.CheckSphere(transform.position, 1f, barrierLayer, QueryTriggerInteraction.Ignore);
 
-        nextBarrierSpawnPosition = nextGroundSpawnPosition;
+        if (shouldSpawn)
+        {
+            int index = Random.Range(0, barrierTiles.Length - 1);
+            var barrierTile = barrierTiles[index]; // take a random item from barriers list
 
-        float randomZ = Random.Range(-1, 1);
-        nextBarrierSpawnPosition.z = randomZ; // set a z position of the barrier
+            nextBarrierSpawnPosition = nextGroundSpawnPosition;
 
-        Instantiate(barrierTile, nextBarrierSpawnPosition, barrierTile.rotation); // spawn tiles
+            float randomZ = Random.Range(-1, 1);
+            nextBarrierSpawnPosition.z = randomZ; // set a z position of the barrier
+
+            Instantiate(barrierTile, nextBarrierSpawnPosition, barrierTile.rotation); // spawn tiles}
+
+        }
     }
 }
